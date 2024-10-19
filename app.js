@@ -37,6 +37,7 @@ app.post('/api/gst-profile', async (req, res) => {
       aggregateTurnovers: response.data.result[0].aggregateTurnovers,
       email: response.data.result[0].email,
       legalName: response.data.result[0].legalName,
+      contact: response.data.result[0].contact,
     };
 
     res.json(extractedData);
