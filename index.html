@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Profile Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        #gstForm {
+            margin-bottom: 20px;
+        }
+        input, button {
+            font-size: 16px;
+            padding: 5px 10px;
+        }
+        #result {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>GST Profile Viewer</h1>
+    <form id="gstForm">
+        <input type="text" id="gstId" placeholder="Enter GST ID" required>
+        <button type="submit">Fetch Profile</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('gstForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('gstId').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Loading...';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/gst-profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.error || 'Unknown error'}`);
+                }
+
+                const data = await response.json();
+                let html = `<h2>GSTIN: ${data.gstin}</h2>`;
+                html+=`<h4>EMAIL: </h4>${data.email}`
+                html+=`<h4>NAME: </h4>${data.legalName}`
+                html += '<h3>Aggregate Turnovers:</h3>';
+                html += '<table><tr><th>Financial Year</th><th>Turnover</th></tr>';
+                data.aggregateTurnovers.forEach(item => {
+                    html += `<tr><td>${item.financialYear}</td><td>${item.turnover}</td></tr>`;
+                });
+                html += '</table>';
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                console.error('Full error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
