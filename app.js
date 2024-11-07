@@ -20,7 +20,7 @@ app.post('/api/gst-profile', async (req, res) => {
     return res.status(400).json({ error: 'ID is required' });
   }
 
-  const url = 'https://uat-hub.perfios.com/api/kscan/v3/gst-profile';
+  const url = 'https://hub.perfios.com/api/kscan/v3/gst-profile';
   
   const headers = {
     'Content-Type': 'application/json',

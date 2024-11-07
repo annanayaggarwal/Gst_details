@@ -63,7 +63,7 @@
             resultDiv.innerHTML = 'Loading...';
 
             try {
-                const response = await fetch('/api/gst-profile', {
+                const response = await fetch('http://localhost:3000/api/gst-profile', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
